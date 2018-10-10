@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class TodoItem extends Component {
 	constructor(props) {
 		super(props);
+		// 当组件的state或者props发生改变的时候，render函数就会重新执行
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
@@ -20,6 +22,18 @@ class TodoItem extends Component {
 			</li>
 		)
 	}
+}
+
+// 校验数据类型
+TodoItem.propTypes = {
+	content: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+	deleteItem: PropTypes.func,
+	index: PropTypes.number
+}
+
+// 变量默认值
+TodoItem.defaultProps = {
+
 }
 
 export default TodoItem;

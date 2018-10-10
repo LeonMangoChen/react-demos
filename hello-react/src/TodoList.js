@@ -1,5 +1,5 @@
 import React, { Component, Fragment} from 'react';
-import TodoItem from './TodoItem'
+import TodoItem from './TodoItem';
 
 class TodoList extends Component {
   constructor(props){
@@ -15,25 +15,42 @@ class TodoList extends Component {
   }
 
   handleBtnClick() {
-    this.setState({
-      list: [...this.state.list, this.state.inputValue],
+    // React16 写法
+    this.setState((prevState) => ({
+      list: [...prevState.list, prevState.inputValue],
       inputValue: ''
-    })
+    }), () => {
+      // 因为setState函数是异步执行，如果需要操作state变化后的数据，要写入setState的第二个参数的回调函数中
+      console.log(this.ul.querySelectorAll('li').length);
+    });
+    // React 16 前写法
+    // this.setState({
+    //   list: [...this.state.list, this.state.inputValue],
+    //   inputValue: ''
+    // })
   }
 
   handleInputChange(e) {
-    this.setState({
-      inputValue:e.target.value
-    });
+    const value = e.target.value;
+    this.setState(() => ({
+      inputValue: value
+    }))
+    // this.setState({
+    //   inputValue:e.target.value
+    // });
   }
 
   // 父组件通过属性的形式向子组件传递参数
   // 子组件通过props接收父组件传递过来的参数
 
   handleDelete(index) {
-    const list = [...this.state.list];
-    list.splice(index,1);
-    this.setState({list});
+    // const list = [...this.state.list];
+    this.setState((prevState) => {
+      const list = [...prevState.list];
+      list.splice(index,1);
+      return {list}
+    });
+    // this.setState({list});
   }
 
   getTodoItems() {
@@ -41,10 +58,10 @@ class TodoList extends Component {
       this.state.list.map((item, index) => {
         // return <li key={index} onClick={this.handItemClick.bind(this, index)}>{item}</li>
         return (
-          <TodoItem 
+          <TodoItem
           deleteItem={this.handleDelete} 
-          key={index} 
-          content={item} 
+          key={index}
+          content={item}
           index={index}
           />
         )
@@ -56,10 +73,19 @@ class TodoList extends Component {
     return (
       <Fragment>
         <div>
-          <input type="text" value={this.state.inputValue} onChange={this.handleInputChange}/>
+          <label htmlFor="insrtArae">输入内容</label>
+          <input 
+            id="insrtArae"
+            type="text" 
+            value={this.state.inputValue} 
+            onChange={this.handleInputChange}
+          />
           <button onClick={this.handleBtnClick}>add</button>
         </div>
-        <ul>{this.getTodoItems()}</ul>
+        {/*ref是获取dom，一般情况下尽量不要使用*/}
+        <ul ref={(ul) => {this.ul = ul}}>{this.getTodoItems()}</ul>
+
+        {/* <SimpleTodoLis /> */}
       </Fragment>
     );
   }
