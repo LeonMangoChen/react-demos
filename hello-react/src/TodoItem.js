@@ -14,6 +14,15 @@ class TodoItem extends Component {
 		const { deleteItem, index } = this.props;
 		deleteItem(index);
 	}
+
+	// 当组件更新重新渲染时，阻止子组件render重新渲染，提升性能
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.content !== this.props.content) {
+			return true;
+		}
+		return false;
+	}
+
 	render() {
 		const { content } = this.props;
 		return (

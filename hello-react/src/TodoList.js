@@ -1,17 +1,21 @@
 import React, { Component, Fragment} from 'react';
 import TodoItem from './TodoItem';
+import axios from 'axios';
+import './style.css'
 
 class TodoList extends Component {
   constructor(props){
     super(props);
     this.state = {
       list: [],
-      inputValue: ''
+      inputValue: '',
+      show: true
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleBtnClick = this.handleBtnClick.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
   handleBtnClick() {
@@ -69,6 +73,12 @@ class TodoList extends Component {
     )
   }
 
+  handleToggle(){
+    this.setState({
+      show: this.state.show ? false : true
+    });
+  }
+
   render() {
     return (
       <Fragment>
@@ -86,8 +96,22 @@ class TodoList extends Component {
         <ul ref={(ul) => {this.ul = ul}}>{this.getTodoItems()}</ul>
 
         {/* <SimpleTodoLis /> */}
+
+        <div className={this.state.show? 'show' : 'hide'}>hello</div>
+        <button onClick={this.handleToggle}>toggle</button>
       </Fragment>
     );
+  }
+
+  componentDidMount() {
+    axios.get('/api/todolist')
+      .then((res)=>{
+        console.log(res.data);
+        this.setState(() => ({
+          list: [...res.data]
+        }));
+      })
+      .catch(()=>{console.log('error')})
   }
 }
 
